@@ -31,6 +31,7 @@ from .signals import (
     cancelled,
     card_changed,
     subscription_made,
+    charge_made,
     webhook_processing_error,
     WEBHOOK_SIGNALS,
 )
@@ -596,6 +597,7 @@ class Customer(StripeObject):
         obj = self.record_charge(resp["id"])
         if send_receipt:
             obj.send_receipt()
+        charge_made.send(sender=self, stripe_response=resp)
         return obj
 
     def record_charge(self, charge_id):
