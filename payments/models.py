@@ -576,7 +576,7 @@ class Customer(StripeObject):
         subscription_made.send(sender=self, plan=plan, stripe_response=resp)
         return resp
 
-    def charge(self, amount, currency="usd", description=None,
+    def charge(self, item, amount, currency="usd", description=None,
                send_receipt=True, capture=True):
         """
         This method expects `amount` to be a Decimal type representing a
@@ -597,7 +597,7 @@ class Customer(StripeObject):
         obj = self.record_charge(resp["id"])
         if send_receipt:
             obj.send_receipt()
-        charge_made.send(sender=self, stripe_response=resp)
+        charge_made.send(sender=self, item=item, stripe_response=resp)
         return obj
 
     def record_charge(self, charge_id):
